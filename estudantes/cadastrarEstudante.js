@@ -1,7 +1,7 @@
 let idGen = 1
 
-function cadastrarLivro(req, res, livros) {
-    const { titulo, autor, anoDeLancamento, genero } = req.body;
+function cadastrarEstudante(req, res, estudantes) {
+    const { nome, matricula, curso, ano } = req.body;
 
     
     if (typeof anoDeLancamento !== 'number') {
@@ -9,10 +9,10 @@ function cadastrarLivro(req, res, livros) {
     }
 
     const novoLivro = {
-        titulo: titulo,
-        autor: autor,
-        anoDeLancamento: anoDeLancamento,
-        genero: genero,
+        nome: nome,
+        matricula: matricula,
+        curso: curso,
+        ano: ano,
         id: idGen,
     };
     idGen++;
@@ -20,4 +20,4 @@ function cadastrarLivro(req, res, livros) {
     res.status(201).send('Livro cadastrado com sucesso!');
 }
 
-module.exports = cadastrarLivro;
+module.exports = cadastrarEstudante;
