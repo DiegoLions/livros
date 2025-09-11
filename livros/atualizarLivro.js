@@ -1,8 +1,7 @@
 function atualizarLivro(req, res, livros) {
     if (livros.length === 0) {
-        return res.status(400).send('Nenhum livro cadastrado no gerenciador. Primeiro, adicione um livro para então poder editá-lo.');
+        return res.status(400).send('Nenhum livro cadastrado no gerenciador. Primeiro, cadastre um livro para então poder editá-lo.');
     }
-    
 
     const {id} = req.params;
 

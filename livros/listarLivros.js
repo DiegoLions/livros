@@ -4,7 +4,7 @@ function listarLivros(req, res,livros) {
     } 
     
     return res.status(200).send(`
-        \n=== LIVROS SALVOS NO GERENCIADOR ===
+        \n=== LIVROS CADASTRADOS NO GERENCIADOR ===
         ${
             livros.map((livro, index) => {
                 return (`

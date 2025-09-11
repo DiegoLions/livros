@@ -4,11 +4,11 @@ function cadastrarEstudante(req, res, estudantes) {
     const { nome, matricula, curso, ano } = req.body;
 
     
-    if (typeof anoDeLancamento !== 'number') {
-        return res.status(400).send("Ano de Lançamento inválido. Por favor, digite um número, não uma string.");
+    if (typeof ano !== 'number') {
+        return res.status(400).send("Ano inválido. Por favor, digite um número (não uma string).");
     }
 
-    const novoLivro = {
+    const novoEstudante = {
         nome: nome,
         matricula: matricula,
         curso: curso,
@@ -16,8 +16,8 @@ function cadastrarEstudante(req, res, estudantes) {
         id: idGen,
     };
     idGen++;
-    livros.push(novoLivro);
-    res.status(201).send('Livro cadastrado com sucesso!');
+    estudantes.push(novoEstudante);
+    res.status(201).send('Estudante cadastrado com sucesso!');
 }
 
 module.exports = cadastrarEstudante;
