@@ -20,9 +20,9 @@ const indexParaAtualizar = estudantes.findIndex (estudante => estudante.id===par
         }
 
 
-        if (isNaN(parseInt(ano)) || ano.trim() === '') {
-           return res.status(400).send("Ano inválido. Por favor, digite apenas números.");
-        }
+            if (typeof ano !== 'number') {
+        return res.status(400).send("Ano inválido. Por favor, digite um número (não uma string).");
+    }
     
     const estudanteParaAtualizar = {
         nome: nome,

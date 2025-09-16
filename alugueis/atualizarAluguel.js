@@ -1,4 +1,4 @@
-function atualizarAluguel(req, res, alugueis, livros, estudantes) {
+function atualizarAluguel(req, res, livros, estudantes, alugueis) {
     if (alugueis.length === 0) {
         return res.status(400).send('Nenhum aluguel cadastrado para ser editado.');
     }
@@ -17,12 +17,12 @@ function atualizarAluguel(req, res, alugueis, livros, estudantes) {
         return res.status(404).send(`Não foi encontrado um aluguel com o ID ${id}.`);
     }
 
-    if (!dataDeInicio || isNaN(new Date(dataDeInicio))) {
-        return res.status(400).send("Data de início inválida. Por favor, digite uma data válida.");
+    if (!dataDeInicio || dataDeInicio.trim() === '' || isNaN (new Date(dataDeInicio)) || new Date() < new Date(dataDeInicio)) {
+        return res.status(400).send("Data de início inválida ou vazia. Por favor, digite uma data válida. Atente-se para que corresponda ao formato \"AAAA-MM-DD\"");
     }
 
-    if (!dataDeDevolucao || isNaN(new Date(dataDeDevolucao))) {
-        return res.status(400).send("Data de devolução inválida. Por favor, digite uma data válida.");
+    if (!dataDeDevolucao || dataDeDevolucao.trim() === '' || isNaN (new Date(dataDeDevolucao)) || new Date(dataDeDevolucao) < new Date(dataDeInicio)) {
+        return res.status(400).send("Data de devolução inválida ou vazia. Por favor, digite uma data válida. Atente-se para que corresponda ao formato \"AAAA-MM-DD\"");
     }
     
     if (idLivro) {
@@ -38,13 +38,15 @@ function atualizarAluguel(req, res, alugueis, livros, estudantes) {
             return res.status(404).send(`Estudante com o ID ${idEstudante} não encontrado.`);
         }
     }
+
+    const dataDeInicioISO = new Date(dataDeInicio).toISOString().split('T')
+    const dataDeDevolucaoISO = new Date(dataDeDevolucao).toISOString().split('T')
     
-    const aluguelExistente = alugueis[index];
-    
-    aluguelExistente.idLivro = parseInt(idLivro) || aluguelExistente.idLivro;
-    aluguelExistente.idEstudante = parseInt(idEstudante) || aluguelExistente.idEstudante;
-    aluguelExistente.dataDeInicio = dataDeInicio || aluguelExistente.dataDeInicio;
-    aluguelExistente.dataDeDevolucao = dataDeDevolucao || aluguelExistente.dataDeDevolucao;
+    alugueis[index].idLivro = parseInt(idLivro) || alugueis[index].idLivro;
+    alugueis[index].idEstudante = parseInt(idEstudante) || alugueis[index].idEstudante;
+    alugueis[index].dataDeInicio = dataDeInicioISO[0] || alugueis[index].dataDeInicio;
+    alugueis[index].dataDeDevolucao = dataDeDevolucaoISO[0] || alugueis[index].dataDeDevolucao;
+    console.log(alugueis[index])
 
     return res.status(200).send("Aluguel atualizado com sucesso!");
 }

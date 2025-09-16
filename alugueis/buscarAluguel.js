@@ -4,24 +4,29 @@ function buscarAluguelPorDataDeInicio(req, res, livros, estudantes, alugueis) {
     }
     
     const { dataDeInicio } = req.params;
+ 
 
-    if (!dataDeInicio || dataDeInicio.trim() === '') {
-        return res.status(400).send('A data de início do aluguel não pode estar vazia.');
+    if (!dataDeInicio || dataDeInicio.trim() === '' || isNaN (new Date(dataDeInicio)) || new Date() < new Date(dataDeInicio)) {
+        return res.status(400).send('A data de início do aluguel não pode estar vazia ou ser maior que a data de hoje');
     }
 
-const filtrarAluguel = alugueis.filter(aluguel =>
-        aluguel.dataDeInicio.toLowerCase().includes(dataDeInicio.toLowerCase())
-    );
+const dataDeInicioISO = new Date(dataDeInicio).toISOString().split('T')
 
+    const filtrarAluguel = alugueis.filter(aluguel =>
+        aluguel.dataDeInicio.includes(dataDeInicioISO[0])
+    );
+ 
     if (filtrarAluguel.length === 0) {
-        return res.status(404).send(`Nenhum aluguel encontrado para a data de início "${dataDeInicio}".`);
+        return res.status(404).send(`Nenhum aluguel encontrado para a data de início "${dataDeInicioISO[0]}".`);
     } else {
-        let mensagem = `\n--- ALUGUEL(ÉIS) QUE INICIAM(ARAM) NA DATA DE  "${dataDeInicio}" ---\n`;
+        let mensagem = `\n--- ALUGUEL(ÉIS) QUE INICIAM(ARAM) NA DATA DE  "${dataDeInicioISO[0]}" ---\n`;
         filtrarAluguel.forEach(aluguel => {
-            return `
+            const estudante = estudantes.find(estudante => estudante.id === aluguel.idEstudante)
+            const livro = livros.find(livro => livro.id === aluguel.idLivro)
+            mensagem = mensagem + `
                 ID do Aluguel: ${aluguel.id}
-                Título do Livro: ${tituloLivro} (ID: ${aluguel.idLivro})
-                Alugado para: ${nomeEstudante} (ID: ${aluguel.idEstudante})
+                Título do Livro: ${livro.titulo} (ID: ${aluguel.idLivro})
+                Alugado para: ${estudante.nome} (ID: ${aluguel.idEstudante})
                 Data de Início do Aluguel: ${aluguel.dataDeInicio}
                 Data de Devolução do Livro: ${aluguel.dataDeDevolucao}
                 \n-------------------------\n
@@ -136,4 +141,4 @@ function buscarLivroPorGenero(req, res, livros) {
     }
 }
 
-module.exports = { buscarLivroPorAutor, buscarLivroPorAnoDeLancamento, buscarLivroPorGenero};
+module.exports = {buscarAluguelPorDataDeInicio};

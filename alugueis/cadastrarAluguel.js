@@ -33,15 +33,15 @@ function cadastrarAluguel(req, res, livros, estudantes, alugueis) {
     const diaDeHoje = new Date();
     const daquiSeteDias = new Date();
     daquiSeteDias.setDate(diaDeHoje.getDate() + 7);
-    const dataDeInicio = `${diaDeHoje.getFullYear()}-${diaDeHoje.getMonth()}-${diaDeHoje.getDate()}`;
-    const dataDeDevolucao = `${daquiSeteDias.getFullYear()}-${daquiSeteDias.getMonth()}-${daquiSeteDias.getDate()}`
+    const dataDeInicio = diaDeHoje.toISOString().split('T');
+    const dataDeDevolucao = daquiSeteDias.toISOString().split('T');
 
     const novoAluguel = {
         id: idAluguelGen++,
         idLivro: livro.id,
         idEstudante: estudante.id,
-        dataDeInicio: dataDeInicio,
-        dataDeDevolucao: dataDeDevolucao,
+        dataDeInicio: dataDeInicio[0],
+        dataDeDevolucao: dataDeDevolucao[0],
     };
 
     livro.alugado = true;

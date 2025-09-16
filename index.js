@@ -65,14 +65,14 @@ app.delete ('/estudante/:id', (req, res) => deletarEstudante(req, res, estudante
 
 app.post ('/aluguel', (req, res) => cadastrarAluguel(req, res, livros, estudantes, alugueis))
 
-app.get ('/aluguel', (req, res) => listarAlugueis(req, res, alugueis))
+app.get ('/aluguel', (req, res) => listarAlugueis(req, res, livros,estudantes, alugueis))
 
-app.get ('/aluguel/datadeinicio/:dataDeInicio', (req, res) => buscarAluguelPorDataDeInicio(req, res, alugueis))
+app.get ('/aluguel/datadeinicio/:dataDeInicio', (req, res) => buscarAluguelPorDataDeInicio(req, res, livros, estudantes, alugueis))
 
-app.get ('/aluguel/iddolivro/:idDoLivro', (req, res) => buscarAluguelPorIdDoLivro(req, res, alugueis))
+app.get ('/aluguel/iddolivro/:idDoLivro', (req, res) => buscarAluguelPorIdDoLivro(req, res, livros, livros, estudantes, alugueis))
 
-app.get ('/aluguel/iddoestudante/:idDoEstudante', (req, res) => buscarAluguelPorIdDoEstudante(req, res, alugueis))
+app.get ('/aluguel/iddoestudante/:idDoEstudante', (req, res) => buscarAluguelPorIdDoEstudante(req, res, livros, estudantes, alugueis))
 
-app.put ('/aluguel/:id', (req, res) => atualizarEstudante(req, res, alugueis))
+app.put ('/aluguel/:id', (req, res) => atualizarAluguel(req, res, livros, estudantes, alugueis))
 
-app.delete ('/aluguel/:id', (req, res) => deletarEstudante(req, res, alugueis))
+app.delete ('/aluguel/:id', (req, res) => deletarAluguel(req, res, livros, estudantes, alugueis))

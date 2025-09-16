@@ -19,9 +19,10 @@ const indexParaAtualizar = livros.findIndex (livro => livro.id===parseInt(id))
         }
 
 
-        if (isNaN(parseInt(anoDeLancamento)) || anoDeLancamento.trim() === '') {
-           return res.status(400).send("Ano de Lançamento inválido. Por favor, digite apenas números.");
-        }
+     if (typeof anoDeLancamento !== 'number') {
+        return res.status(400).send("Ano de Lançamento inválido. Por favor, digite um número, não uma string.");
+    }
+
     
     const livroParaAtualizar = {
         titulo: titulo,
