@@ -37,108 +37,112 @@ const dataDeInicioISO = new Date(dataDeInicio).toISOString().split('T')
 }
 
 
-function buscarLivroPorAutor(req, res, livros) {
-        if (livros.length === 0) {
-        return res.status(400).send('Nenhum livro cadastrado.');
+function buscarAluguelPorIdLivro(req, res, livros, estudantes, alugueis) {
+        if (alugueis.length === 0) {
+        return res.status(400).send('Nenhum aluguel cadastrado.');
     }
     
-    const {autor} = req.params
+    const {idLivro} = req.params;
 
-    if (!autor || autor.trim() === '') {
-        return res.status(400).send('O nome do autor não pode ser pesquisado se estiver vazio.');
-    }
+    const indexParaBuscar = alugueis.findIndex (aluguel => aluguel.id===parseInt(idLivro))
 
-const filtrarLivro = livros.filter(livro =>
-        livro.autor.toLowerCase().includes(autor.toLowerCase())
+        if (isNaN(idLivro)) {
+            return res.status(400).send("ID inválido. Por favor, digite um número.");
+        }
+
+    const dataDeInicioISO = new Date(dataDeInicio).toISOString().split('T')
+
+    const filtrarAluguel = alugueis.filter(aluguel =>
+        aluguel.dataDeInicio.includes(dataDeInicioISO[0])
     );
-
-    if (filtrarLivro.length === 0) {
-        return res.status(404).send(`Nenhum livro encontrado para o autor "${autor}".`);
+ 
+    if (filtrarAluguel.length === 0) {
+        return res.status(404).send(`Nenhum aluguel encontrado para o livro de ID nº "${idLivro}".`);
     } else {
-        let mensagem = `\n--- LIVRO(S) DO(A) AUTOR(A) "${autor}" ---\n`;
-        filtrarLivro.forEach(livro => {
-            mensagem += `\nID: ${livro.id}`;
-            mensagem += `\nTítulo: ${livro.titulo}`;
-            mensagem += `\nAutor: ${livro.autor}`;
-            mensagem += `\nAno de Lançamento: ${livro.anoDeLancamento}`;
-            mensagem += `\nGênero: ${livro.genero}`;
-            mensagem += "\n-------------------------\n";
+        let mensagem = `\n--- ALUGUEL(ÉIS) NO GERENCIADOR COM O LIVRO DE ID ${idLivro}" ---\n`;
+        filtrarAluguel.forEach(aluguel => {
+            const estudante = estudantes.find(estudante => estudante.id === aluguel.idEstudante)
+            const livro = livros.find(livro => livro.id === aluguel.idLivro)
+            mensagem = mensagem + `
+                ID do Aluguel: ${aluguel.id}
+                Título do Livro: ${livro.titulo} (ID: ${aluguel.idLivro})
+                Alugado para: ${estudante.nome} (ID: ${aluguel.idEstudante})
+                Data de Início do Aluguel: ${aluguel.dataDeInicio}
+                Data de Devolução do Livro: ${aluguel.dataDeDevolucao}
+                \n-------------------------\n
+            `
         });
         return res.status(200).send(mensagem);
-    }
+}
 }
 
-function buscarLivroPorAnoDeLancamento(req, res, livros) {
-    if (livros.length === 0) {
-        return res.status(400).send('Nenhum livro cadastrado.');
+function buscarAluguelPorIdLivro(req, res, livros, estudantes, alugueis) {
+    if (alugueis.length === 0) {
+        return res.status(400).send('Nenhum aluguel cadastrado.');
     }
-
-    const { anoDeLancamento } = req.params;
-
-    console.log(anoDeLancamento)
     
-    const anoNumerico = parseInt(anoDeLancamento);
-
-        console.log(livros)
-    if (isNaN(anoNumerico)) {
-        return res.status(400).send("Ano de Lançamento inválido. Por favor, digite um número.");
+    const {idLivro} = req.params;
+    if (isNaN(parseInt(idLivro))) {
+        return res.status(400).send("ID inválido. Por favor, digite um número.");
     }
-
-    const livrosFiltrados = livros.filter(livro => livro.anoDeLancamento == anoNumerico);
-
-   
-    if (livrosFiltrados.length === 0) {
-        return res.status(404).send(`Não foi encontrado um livro com o ano de lançamento ${anoNumerico}. Por favor, tente novamente.`);
+    
+    const alugueisDoLivro = alugueis.filter(aluguel => aluguel.idLivro === parseInt(idLivro));
+    
+    if (alugueisDoLivro.length === 0) {
+        return res.status(404).send(`Nenhum aluguel encontrado para o livro de ID nº "${idLivro}".`);
     } else {
-        const listaDeLivros = livrosFiltrados.map((livro, index) => {
+        const listaDeAlugueis = alugueisDoLivro.map(aluguel => {
+            const estudante = estudantes.find(e => e.id === aluguel.idEstudante);
+            const livro = livros.find(l => l.id === aluguel.idLivro);
+            
+            const tituloLivro = livro ? livro.titulo : 'Livro não encontrado';
+            const nomeEstudante = estudante ? estudante.nome : 'Estudante não encontrado';
+
             return `
-                ${index + 1}. 
-                ID: ${livro.id}
-                Título: ${livro.titulo}
-                Autor: ${livro.autor}
-                Ano de Lançamento: ${livro.anoDeLancamento}
-                Gênero: ${livro.genero}\n`;
+                ID do Aluguel: ${aluguel.id}
+                Título do Livro: ${tituloLivro} (ID: ${aluguel.idLivro})
+                Alugado para: ${nomeEstudante} (ID: ${aluguel.idEstudante})
+                Data de Início do Aluguel: ${aluguel.dataDeInicio}
+                Data de Devolução do Livro: ${aluguel.dataDeDevolucao}
+                \n-------------------------\n`;
         }).join('');
-
-        return res.status(200).send(`\n=== LIVRO(S) LANÇADO(S) NO ANO DE ${anoNumerico} ===${listaDeLivros}`);
+        return res.status(200).send(`\n=== ALUGUEL(ÉIS) ENCONTRADOS NO GERENCIADOR PARA O LIVRO DE ID Nº ${idLivro} ===\n${listaDeAlugueis}`);
     }
 }
 
-function buscarLivroPorGenero(req, res, livros) {
-    if (livros.length === 0) {
-        return res.status(400).send('Nenhum livro cadastrado.');
+
+function buscarAluguelPorIdEstudante(req, res, livros, estudantes, alugueis) {
+  if (alugueis.length === 0) {
+        return res.status(400).send('Nenhum aluguel cadastrado.');
     }
     
-    const { genero } = req.params;
-
-    if (!genero || genero.trim() === '') {
-        return res.status(400).send('O gênero não pode estar vazio.');
+    const {idEstudante} = req.params;
+    if (isNaN(parseInt(idEstudante))) {
+        return res.status(400).send("ID inválido. Por favor, digite um número.");
     }
-
-    const removerAcentos = (texto) => {
-        return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    };
-
-    const generoNormalizado = removerAcentos(genero).toLowerCase();
-
-    const filtrarLivro = livros.filter(livro =>
-        removerAcentos(livro.genero).toLowerCase().includes(generoNormalizado)
-    );
-
-    if (filtrarLivro.length === 0) {
-        return res.status(404).send(`Nenhum livro encontrado para o gênero "${genero}".`);
+    
+    const alugueisDoLivro = alugueis.filter(aluguel => aluguel.idEstudante === parseInt(idEstudante));
+    
+    if (alugueisDoLivro.length === 0) {
+        return res.status(404).send(`Nenhum aluguel encontrado para o estudante de ID nº "${idEstudante}".`);
     } else {
-        let mensagem = `\n--- LIVRO(S) DO GÊNERO "${genero}" ---\n`;
-        filtrarLivro.forEach(livro => {
-            mensagem += `\nID: ${livro.id}`;
-            mensagem += `\nTítulo: ${livro.titulo}`;
-            mensagem += `\nAutor: ${livro.autor}`;
-            mensagem += `\nAno de Lançamento: ${livro.anoDeLancamento}`;
-            mensagem += `\nGênero: ${livro.genero}`;
-            mensagem += "\n-------------------------\n";
-        });
-        return res.status(200).send(mensagem);
+        const listaDeAlugueis = alugueisDoLivro.map(aluguel => {
+            const estudante = estudantes.find(e => e.id === aluguel.idEstudante);
+            const livro = livros.find(l => l.id === aluguel.idLivro);
+            
+            const tituloLivro = livro ? livro.titulo : 'Livro não encontrado';
+            const nomeEstudante = estudante ? estudante.nome : 'Estudante não encontrado';
+
+            return `
+                ID do Aluguel: ${aluguel.id}
+                Título do Livro: ${tituloLivro} (ID: ${aluguel.idLivro})
+                Alugado para: ${nomeEstudante} (ID: ${aluguel.idEstudante})
+                Data de Início do Aluguel: ${aluguel.dataDeInicio}
+                Data de Devolução do Livro: ${aluguel.dataDeDevolucao}
+                \n-------------------------\n`;
+        }).join('');
+        return res.status(200).send(`\n=== ALUGUEL(ÉIS) ENCONTRADOS NO GERENCIADOR PARA O ESTUDANTE DE ID Nº ${idEstudante} ===\n${listaDeAlugueis}`);
     }
 }
 
-module.exports = {buscarAluguelPorDataDeInicio};
+module.exports = {buscarAluguelPorDataDeInicio, buscarAluguelPorIdLivro, buscarAluguelPorIdEstudante};

@@ -15,7 +15,7 @@ const deletarEstudante = require('./estudantes/deletarEstudante');
 
 const cadastrarAluguel = require('./alugueis/cadastrarAluguel');
 const listarAlugueis = require('./alugueis/listarAlugueis');
-const {buscarAluguelPorDataDeInicio, buscarAluguelPorIdDoLivro, buscarAluguelPorIdDoEstudante} = require('./alugueis/buscarAluguel');
+const {buscarAluguelPorDataDeInicio, buscarAluguelPorIdLivro, buscarAluguelPorIdEstudante} = require('./alugueis/buscarAluguel');
 const atualizarAluguel = require('./alugueis/atualizarAluguel');
 const deletarAluguel = require('./alugueis/deletarAluguel');
 
@@ -69,9 +69,9 @@ app.get ('/aluguel', (req, res) => listarAlugueis(req, res, livros,estudantes, a
 
 app.get ('/aluguel/datadeinicio/:dataDeInicio', (req, res) => buscarAluguelPorDataDeInicio(req, res, livros, estudantes, alugueis))
 
-app.get ('/aluguel/iddolivro/:idDoLivro', (req, res) => buscarAluguelPorIdDoLivro(req, res, livros, livros, estudantes, alugueis))
+app.get ('/aluguel/idlivro/:idLivro', (req, res) => buscarAluguelPorIdLivro(req, res, livros, estudantes, alugueis))
 
-app.get ('/aluguel/iddoestudante/:idDoEstudante', (req, res) => buscarAluguelPorIdDoEstudante(req, res, livros, estudantes, alugueis))
+app.get ('/aluguel/idEstudante/:idEstudante', (req, res) => buscarAluguelPorIdEstudante(req, res, livros, estudantes, alugueis))
 
 app.put ('/aluguel/:id', (req, res) => atualizarAluguel(req, res, livros, estudantes, alugueis))
 

@@ -18,7 +18,7 @@ const indexParaDeletar = alugueis.findIndex (aluguel => aluguel.id===parseInt(id
 
     alugueis.splice(indexParaDeletar, 1);
 
-    return res.send("aluguel deletado com sucesso!");
+    return res.send("Aluguel deletado com sucesso!");
 
 }
 
